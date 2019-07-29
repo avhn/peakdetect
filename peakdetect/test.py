@@ -1,25 +1,16 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-
-# Copyright (C) 2016 Sixten Bergman
-# License WTFPL
-#
-# This program is free software. It comes without any warranty, to the extent
-# permitted by applicable law. 
-# You can redistribute it and/or modify it under the terms of the Do What The
-# Fuck You Want To Public License, Version 2, as published by Sam Hocevar. See
-# http://www.wtfpl.net/ for more details.
-#
-
-import analytic_wfm
 import numpy as np
-import peakdetect
 import unittest
-import pdb
 
-#generate time axis for 5 cycles @ 50 Hz
+import peakdetect
+import waveform
+
+# generate time axis for 5 cycles @ 50 Hz
 linspace_standard = np.linspace(0, 0.10, 1000)
 linspace_peakdetect = np.linspace(0, 0.10, 10000)
+
 
 def prng():
     """
@@ -98,8 +89,7 @@ def _log_diff(t_max, y_max,
         ]
     
     _write_log(file, name, "\n".join(data))
-    
-    
+
     
 def _is_close(max_p, min_p, 
         expected_max, expected_min, 
@@ -139,80 +129,73 @@ def _is_close(max_p, min_p,
     t_min_close = np.isclose(t_min, t_min_expected, atol=atol_time, rtol=1e-12)
     y_min_close = np.isclose(y_min, y_min_expected, tol_ampl)
     
-    
-    _log_diff(t_max, y_max, t_min, y_min, 
-            t_max_expected, y_max_expected,
-            t_min_expected, y_min_expected,
-            file, name)
+    _log_diff(t_max, y_max, t_min, y_min,
+              t_max_expected, y_max_expected,
+              t_min_expected, y_min_expected,
+              file, name)
 
-    return(t_max_close, y_max_close, t_min_close, y_min_close)
-
-
+    return t_max_close, y_max_close, t_min_close, y_min_close
 
 
 class Test_analytic_wfm(unittest.TestCase):
     def test_ACV1(self):
-        #compare with previous lambda implementation
-        old = analytic_wfm._ACV_A1_L(linspace_standard)
-        acv = analytic_wfm.ACV_A1(linspace_standard)
+        # compare with previous lambda implementation
+        old = waveform._ACV_A1_L(linspace_standard)
+        acv = waveform.ACV_A1(linspace_standard)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
         
     def test_ACV2(self):
-        #compare with previous lambda implementation
-        old = analytic_wfm._ACV_A2_L(linspace_standard)
-        acv = analytic_wfm.ACV_A2(linspace_standard)
+        # compare with previous lambda implementation
+        old = waveform._ACV_A2_L(linspace_standard)
+        acv = waveform.ACV_A2(linspace_standard)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
         
     def test_ACV3(self):
-        #compare with previous lambda implementation
-        old = analytic_wfm._ACV_A3_L(linspace_standard)
-        acv = analytic_wfm.ACV_A3(linspace_standard)
+        # compare with previous lambda implementation
+        old = waveform._ACV_A3_L(linspace_standard)
+        acv = waveform.ACV_A3(linspace_standard)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
         
     def test_ACV4(self):
-        #compare with previous lambda implementation
-        old = analytic_wfm._ACV_A4_L(linspace_standard)
-        acv = analytic_wfm.ACV_A4(linspace_standard)
+        # compare with previous lambda implementation
+        old = waveform._ACV_A4_L(linspace_standard)
+        acv = waveform.ACV_A4(linspace_standard)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
         
     def test_ACV5(self):
-        #compare with previous lambda implementation
-        old = analytic_wfm._ACV_A5_L(linspace_standard)
-        acv = analytic_wfm.ACV_A5(linspace_standard)
+        # compare with previous lambda implementation
+        old = waveform._ACV_A5_L(linspace_standard)
+        acv = waveform.ACV_A5(linspace_standard)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
         
     def test_ACV6(self):
-        #compare with previous lambda implementation
-        old = analytic_wfm._ACV_A6_L(linspace_standard)
-        acv = analytic_wfm.ACV_A6(linspace_standard)
+        # compare with previous lambda implementation
+        old = waveform._ACV_A6_L(linspace_standard)
+        acv = waveform.ACV_A6(linspace_standard)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
-        
-        
+
     def test_ACV7(self):
         num = np.linspace(0, 20, 1000)
-        old = analytic_wfm._ACV_A7_OLD(num)
-        acv = analytic_wfm.ACV_A7(num)
+        old = waveform._ACV_A7_OLD(num)
+        acv = waveform.ACV_A7(num)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
-        
-        
+
     def test_ACV8(self):
         num = np.linspace(0, 3150, 10000)
-        old = analytic_wfm._ACV_A8_OLD(num)
-        acv = analytic_wfm.ACV_A8(num)
+        old = waveform._ACV_A8_OLD(num)
+        acv = waveform.ACV_A8(num)
         
         self.assertTrue(np.allclose(acv, old, rtol=1e-9))
         
         
-        
-        
-class _Test_peakdetect_template(unittest.TestCase):
+class TestPeakdetectTemplate(unittest.TestCase):
     func = None
     file = "Mismatch data.txt"
     name = "template"
@@ -222,11 +205,11 @@ class _Test_peakdetect_template(unittest.TestCase):
     msg_y = "Amplitude of {0!s} not within tolerance:\n\t{1}"
     
     def _test_peak_template(self, waveform, 
-            expected_max, expected_min, 
-            wav_name,
-            atol_time = 1e-5, tol_ampl = 1e-5):
+                            expected_max, expected_min,
+                            wav_name,
+                            atol_time = 1e-5, tol_ampl = 1e-5):
+
         """
-        
         keyword arguments:
         waveform -- a function that given x can generate a test waveform
         expected_max -- position and amplitude where maxima are expected
@@ -237,10 +220,10 @@ class _Test_peakdetect_template(unittest.TestCase):
         """
         
         y = waveform(linspace_peakdetect)
-        max_p, min_p = self.func(y, linspace_peakdetect, 
-            *self.args, **self.kwargs
-            )
-        #check if the correct amount of peaks were discovered
+        max_p, min_p = self.func(y, linspace_peakdetect,
+                                 *self.args, **self.kwargs
+                                 )
+        # check if the correct amount of peaks were discovered
         self.assertIn(len(max_p), [4,5])
         self.assertIn(len(min_p), [4,5])
         
@@ -255,20 +238,18 @@ class _Test_peakdetect_template(unittest.TestCase):
             atol_time, tol_ampl,
             self.file, "{0}: {1}".format(wav_name, self.name))
         
-        #assert if values are outside of tolerance
+        # assert if values are outside of tolerance
         self.assertTrue(np.all(t_max_close),
-            msg=self.msg_t.format("maxima", t_max_close))
+                        msg=self.msg_t.format("maxima", t_max_close))
         self.assertTrue(np.all(y_max_close),
-            msg=self.msg_y.format("maxima", y_max_close))
-        
+                        msg=self.msg_y.format("maxima", y_max_close))
         self.assertTrue(np.all(t_min_close),
-            msg=self.msg_t.format("minima", t_min_close))
+                        msg=self.msg_t.format("minima", t_min_close))
         self.assertTrue(np.all(y_min_close),
-            msg=self.msg_y.format("minima", y_min_close))
-            
-            
+                        msg=self.msg_y.format("minima", y_min_close))
+
     def test_peak_ACV1(self):
-        peak_pos = 1000*np.sqrt(2) #1414.2135623730951
+        peak_pos = 1000*np.sqrt(2) # 1414.2135623730951
         peak_neg = -peak_pos
         expected_max = [
                 (0.005, peak_pos),
@@ -287,15 +268,14 @@ class _Test_peakdetect_template(unittest.TestCase):
         atol_time = 1e-5
         tol_ampl = 1e-6
         
-        self._test_peak_template(analytic_wfm.ACV_A1,
-            expected_max, expected_min,
-            "ACV1",
-            atol_time, tol_ampl
-            )
+        self._test_peak_template(waveform.ACV_A1,
+                                 expected_max, expected_min,
+                                 "ACV1",
+                                 atol_time, tol_ampl)
             
     def test_peak_ACV2(self):
-        peak_pos = 1000*np.sqrt(2) + 500 #1414.2135623730951 + 500
-        peak_neg = (-1000*np.sqrt(2)) + 500 #-914.2135623730951
+        peak_pos = 1000*np.sqrt(2) + 500 # 1414.2135623730951 + 500
+        peak_neg = (-1000*np.sqrt(2)) + 500 # -914.2135623730951
         expected_max = [
                 (0.005, peak_pos),
                 (0.025, peak_pos),
@@ -312,14 +292,12 @@ class _Test_peakdetect_template(unittest.TestCase):
                 ]
         atol_time = 1e-5
         tol_ampl = 2e-6
-        
-        self._test_peak_template(analytic_wfm.ACV_A2,
-            expected_max, expected_min, 
-            "ACV2",
-            atol_time, tol_ampl
-            )
-    
-    
+
+        self._test_peak_template(waveform.ACV_A2,
+                                 expected_max, expected_min,
+                                 "ACV2",
+                                 atol_time, tol_ampl)
+
     def test_peak_ACV3(self):
         """
         Sine wave with a 3rd overtone
@@ -349,19 +327,20 @@ class _Test_peakdetect_template(unittest.TestCase):
         
         period = 0.02
         """
+
         base = 1000*np.sqrt(2)
-        
-        #def peak_pos(n):
-        #    return base * (np.sin(6.28319 * n + 1.51306) 
-        #        -0.05*np.sin(25.1327 * n + 5.00505))
-        #def peak_neg(n):
-        #    return base * (0.05 * np.sin(6.55488 - 25.1327 * n)
-        #        - np.sin(1.37692 - 6.28319 * n))
-        
-        
+
+        # def peak_pos(n):
+        #     return base * (np.sin(6.28319 * n + 1.51306)
+        #         -0.05*np.sin(25.1327 * n + 5.00505))
+        # def peak_neg(n):
+        #     return base * (0.05 * np.sin(6.55488 - 25.1327 * n)
+        #         - np.sin(1.37692 - 6.28319 * n))
+
         def peak_pos(n):
-            return base * (np.sin(2*np.pi * n + 1.51306) 
+            return base * (np.sin(2*np.pi * n + 1.51306)
                 -0.05*np.sin(8*np.pi * n + 5.00505))
+
         def peak_neg(n):
             return base * (0.05 * np.sin(6.55488 - 8*np.pi * n)
                 - np.sin(1.37692 - 2*np.pi * n))
@@ -381,28 +360,28 @@ class _Test_peakdetect_template(unittest.TestCase):
                 ]        
         
         expected_max = [
-                (t_max[0], analytic_wfm.ACV_A3(t_max[0])),
-                (t_max[1], analytic_wfm.ACV_A3(t_max[1])),
-                (t_max[2], analytic_wfm.ACV_A3(t_max[2])),
-                (t_max[3], analytic_wfm.ACV_A3(t_max[3])),
-                (t_max[4], analytic_wfm.ACV_A3(t_max[4])),
+                (t_max[0], waveform.ACV_A3(t_max[0])),
+                (t_max[1], waveform.ACV_A3(t_max[1])),
+                (t_max[2], waveform.ACV_A3(t_max[2])),
+                (t_max[3], waveform.ACV_A3(t_max[3])),
+                (t_max[4], waveform.ACV_A3(t_max[4])),
                 ]
         expected_min = [
-                (t_min[0], analytic_wfm.ACV_A3(t_min[0])),
-                (t_min[1], analytic_wfm.ACV_A3(t_min[1])),
-                (t_min[2], analytic_wfm.ACV_A3(t_min[2])),
-                (t_min[3], analytic_wfm.ACV_A3(t_min[3])),
-                (t_min[4], analytic_wfm.ACV_A3(t_min[4])),
+                (t_min[0], waveform.ACV_A3(t_min[0])),
+                (t_min[1], waveform.ACV_A3(t_min[1])),
+                (t_min[2], waveform.ACV_A3(t_min[2])),
+                (t_min[3], waveform.ACV_A3(t_min[3])),
+                (t_min[4], waveform.ACV_A3(t_min[4])),
                 ]
+
         atol_time = 1e-5
         tol_ampl = 2e-6
-        #reduced tolerance since the expected values are only approximated
-        
-        self._test_peak_template(analytic_wfm.ACV_A3,
-            expected_max, expected_min,
-            "ACV3",
-            atol_time, tol_ampl
-            )
+        # reduced tolerance since the expected values are only approximated
+
+        self._test_peak_template(waveform.ACV_A3,
+                                 expected_max, expected_min,
+                                 "ACV3",
+                                 atol_time, tol_ampl)
             
     def test_peak_ACV4(self):
         """
@@ -433,14 +412,12 @@ class _Test_peakdetect_template(unittest.TestCase):
                 ]
         atol_time = 1e-5
         tol_ampl = 2.5e-6
-        #reduced tolerance since the expected values are only approximated
-        
-        self._test_peak_template(analytic_wfm.ACV_A4,
-            expected_max, expected_min,
-            "ACV4",
-            atol_time, tol_ampl
-            )
-     
+        # reduced tolerance since the expected values are only approximated
+
+        self._test_peak_template(waveform.ACV_A4,
+                                 expected_max, expected_min,
+                                 "ACV4",
+                                 atol_time, tol_ampl)
      
     def test_peak_ACV5(self):
         """
@@ -465,8 +442,9 @@ class _Test_peakdetect_template(unittest.TestCase):
                 [0.094999999949999997, -1598.0613254815967]
                 ]
         """
-        peak_pos = 1130*np.sqrt(2)    #1598.0613254815976
-        peak_neg = -1130*np.sqrt(2)   #-1598.0613254815967
+
+        peak_pos = 1130*np.sqrt(2)    # 1598.0613254815976
+        peak_neg = -1130*np.sqrt(2)   # -1598.0613254815967
         expected_max = [
                 (0.005, peak_pos),
                 (0.025, peak_pos),
@@ -483,14 +461,12 @@ class _Test_peakdetect_template(unittest.TestCase):
                 ]
         atol_time = 1e-5
         tol_ampl = 4e-6
-        
-        self._test_peak_template(analytic_wfm.ACV_A5,
-            expected_max, expected_min,
-            "ACV5",
-            atol_time, tol_ampl
-            )
-     
-     
+
+        self._test_peak_template(waveform.ACV_A5,
+                                 expected_max, expected_min,
+                                 "ACV5",
+                                 atol_time, tol_ampl)
+
     def test_peak_ACV6(self):
         """
         Realistic triangle wave
@@ -514,8 +490,8 @@ class _Test_peakdetect_template(unittest.TestCase):
                 [0.094999999949999997, -1485.6313472729362]
                 ]
         """
-        peak_pos = 1050.5*np.sqrt(2)    #1485.6313472729364
-        peak_neg = -1050.5*np.sqrt(2)   #1485.6313472729255
+        peak_pos = 1050.5*np.sqrt(2)    # 1485.6313472729364
+        peak_neg = -1050.5*np.sqrt(2)   # 1485.6313472729255
         expected_max = [
                 (0.005, peak_pos),
                 (0.025, peak_pos),
@@ -532,75 +508,76 @@ class _Test_peakdetect_template(unittest.TestCase):
                 ]
         atol_time = 1e-5
         tol_ampl = 2.5e-6
-        
-        self._test_peak_template(analytic_wfm.ACV_A6,
-            expected_max, expected_min,
-            "ACV6",
-            atol_time, tol_ampl
-            )
+
+        self._test_peak_template(waveform.ACV_A6,
+                                 expected_max, expected_min,
+                                 "ACV6",
+                                 atol_time, tol_ampl)
+
             
-    
-            
-            
-            
-class Test_peakdetect(_Test_peakdetect_template):
+class Test_peakdetect(TestPeakdetectTemplate):
     name = "peakdetect"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect
  
  
-class Test_peakdetect_fft(_Test_peakdetect_template):
+class Test_peakdetect_fft(TestPeakdetectTemplate):
     name = "peakdetect_fft"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect_fft, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect_fft
             
         
-class Test_peakdetect_parabola(_Test_peakdetect_template):
+class Test_peakdetect_parabola(TestPeakdetectTemplate):
     name = "peakdetect_parabola"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect_parabola, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect_parabola
             
         
-class Test_peakdetect_sine(_Test_peakdetect_template):
+class Test_peakdetect_sine(TestPeakdetectTemplate):
     name = "peakdetect_sine"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect_sine, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect_sine
             
         
-class Test_peakdetect_sine_locked(_Test_peakdetect_template):
+class Test_peakdetect_sine_locked(TestPeakdetectTemplate):
     name = "peakdetect_sine_locked"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect_sine_locked, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect_sine_locked
             
         
-class Test_peakdetect_spline(_Test_peakdetect_template):
+class Test_peakdetect_spline(TestPeakdetectTemplate):
     name = "peakdetect_spline"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect_spline, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect_spline
             
         
-class Test_peakdetect_zero_crossing(_Test_peakdetect_template):
+class Test_peakdetect_zero_crossing(TestPeakdetectTemplate):
     name = "peakdetect_zero_crossing"
+
     def __init__(self, *args, **kwargs):
         super(Test_peakdetect_zero_crossing, self).__init__(*args, **kwargs)
         self.func = peakdetect.peakdetect_zero_crossing
-        
-        
-        
+
         
 class Test_peakdetect_misc(unittest.TestCase):
     def test__pad(self):
-        data = [1,2,3,4,5,6,5,4,3,2,1]
+        data = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
         pad_len = 2
         pad = lambda x, c: x[:len(x) // 2] + [0] * c + x[len(x) // 2:]
-        expected = pad(list(data), 2 ** 
-                peakdetect._n(len(data) * pad_len) - len(data))
+        expected = pad(list(data), 2 **
+                       peakdetect._n(len(data) * pad_len) - len(data))
         received = peakdetect._pad(data, pad_len)
         
         self.assertListEqual(received, expected)
@@ -608,30 +585,22 @@ class Test_peakdetect_misc(unittest.TestCase):
         self.assertEqual(2**peakdetect._n(1000), 1024)
         
     def test_zero_crossings(self):
-        y = analytic_wfm.ACV_A1(linspace_peakdetect)
+        y = waveform.ACV_A1(linspace_peakdetect)
         expected_indice = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]
         indice = peakdetect.zero_crossings(y, 50)
         msg = "index:{0:d} should be within 1 of expected:{1:d}"
         for rec, exp in zip(indice, expected_indice):
             self.assertAlmostEqual(rec, exp, delta=1, msg=msg.format(rec, exp))
-        
-    
-        
-            
-        
-#class zero_crossings(unittest.TestCase):
-            
-        
-        
-        
+
+
 if __name__ == "__main__":
     tests_to_run = [
-                #Test_analytic_wfm,
+                # Test_analytic_wfm,
                 Test_peakdetect,
                 Test_peakdetect_parabola,
                 Test_peakdetect_fft,
-                #Test_peakdetect_sine,  #sine tests disabled pending rework
-                #Test_peakdetect_sine_locked,
+                # Test_peakdetect_sine,  #sine tests disabled pending rework
+                # Test_peakdetect_sine_locked,
                 Test_peakdetect_spline,
                 Test_peakdetect_zero_crossing,
                 Test_peakdetect_misc
