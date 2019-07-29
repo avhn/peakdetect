@@ -1,0 +1,25 @@
+# emacs
+\#*\#
+
+# vim
+*.swp
+*~
+
+# virtual envs
+*venv
+
+# builds
+build
+dist
+*.egg-info
+
+# bytecode
+__pycache__
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# jetbrains
+.idea
