@@ -1,15 +1,5 @@
-#!/usr/bin/python2
-
-
-# Copyright (C) 2016 Sixten Bergman
-# License WTFPL
-#
-# This program is free software. It comes without any warranty, to the extent
-# permitted by applicable law. 
-# You can redistribute it and/or modify it under the terms of the Do What The
-# Fuck You Want To Public License, Version 2, as published by Sam Hocevar. See
-# http://www.wtfpl.net/ for more details.
-#
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import numpy as np
 from math import pi, sqrt
@@ -25,11 +15,10 @@ __all__ = [
         'ACV_A8'
         ]
 
-
-
-#Heavyside step function
+# Heavy-side step function
 H_num = lambda t: 1 if t > 0 else 0
 H = lambda T: np.asarray([1 if t > 0 else 0 for t in T])
+
 
 # pure sine
 def ACV_A1(T, Hz=50):
@@ -165,12 +154,12 @@ def ACV_A8(T, Hz=50):
     
  
 _ACV_A1_L = lambda T, Hz = 50: 1000 * sqrt(2) * np.sin(2*pi*Hz * T)
-# 
+
 _ACV_A2_L = lambda T, Hz = 50: 1000 * sqrt(2) * np.sin(2*pi*Hz * T) + 500
-# 
+
 _ACV_A3_L = lambda T, Hz = 50: 1000 * sqrt(2) * (np.sin(2*pi*Hz * T) + 
                             0.05 * np.sin(2*pi*Hz * T * 4 + pi * 2 / 3))
-#     
+
 _ACV_A4_L = lambda T, Hz = 50:( 1000 * sqrt(2) * (np.sin(2*pi*Hz * T) + 
                             0.07 * np.sin(2*pi*Hz * T * 5 + pi * 22 / 18)))
 
@@ -180,24 +169,15 @@ _ACV_A5_L = lambda T, Hz = 50:( 1000 * sqrt(2) * (np.sin(2*pi*Hz * T) +
                             0.05 * np.sin(2*pi*Hz * T * 5) + 
                             0.02 * np.sin(2*pi*Hz * T * 7 - pi) +
                             0.01 * np.sin(2*pi*Hz * T * 9)))
-# 
+
 _ACV_A6_L = lambda T, Hz = 50:( 1000 * sqrt(2) * (np.sin(2*pi*Hz * T) + 
                             0.02 * np.sin(2*pi*Hz * T * 3 - pi) + 
                             0.02 * np.sin(2*pi*Hz * T * 5) + 
                             0.0015 * np.sin(2*pi*Hz * T * 7 - pi) + 
                             0.009 * np.sin(2*pi*Hz * T * 9)))
 
-#A7 & A8 convert so that a input of 16*pi corresponds to a input 0.25 in the current version
+# A7 & A8 convert so that a input of 16*pi corresponds to a input 0.25 in the current version
 _ACV_A7_OLD = lambda T: [1000 * sqrt(2) * np.sin(100 * pi * t) *
         (0.9 * t / 5 * H_num(5-t) + H_num(t-5) * H_num(10-t) * (0.9 + 0.1 * (t-5) / 5)) for t in T]
 _ACV_A8_OLD = lambda T: [1000 * sqrt(2) * np.sin(t) * 
         t / (10 * pi) * H_num(10 - t / (100 * pi)) for t in T]
-
-
-
-if __name__ == "__main__":
-    #create 1 period triangle
-    x = np.linspace(0, 0.02, 4000)
-    y = ACV_A5(x)
-    
-    
