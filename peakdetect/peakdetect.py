@@ -1,7 +1,6 @@
 #!/usr/env/bin python3
 # -*- coding: utf-8 -*-
 
-import logging
 from math import pi, log
 import numpy as np
 import pylab
@@ -100,7 +99,6 @@ def _peakdetect_parabola_fitter(raw_peaks, x_axis, y_axis, points):
         """Derived from ABC formula to result in a solution where A=(rot(c)/t)**2"""
         
         # build list of approximations
-        
         p0 = (a, tau, c)
         popt, pcov = curve_fit(func, x_data, y_data, p0)
         # retrieve tau and c i.e x and y value of peak
@@ -115,7 +113,7 @@ def _peakdetect_parabola_fitter(raw_peaks, x_axis, y_axis, points):
     return fitted_peaks
 
     
-def peakdetect(y_axis, x_axis = None, lookahead = 200, delta=0):
+def peakdetect(y_axis, x_axis=None, lookahead=200, delta=0):
     """
     Converted from/based on a MATLAB script at: 
     http://billauer.co.il/peakdet.html
@@ -190,11 +188,11 @@ def peakdetect(y_axis, x_axis = None, lookahead = 200, delta=0):
             if y_axis[index:index+lookahead].max() < mx:
                 max_peaks.append([mxpos, mx])
                 dump.append(True)
-                #set algorithm to only find minima now
+                # set algorithm to only find minima now
                 mx = np.Inf
                 mn = np.Inf
                 if index+lookahead >= length:
-                    #end is within lookahead no more peaks can be found
+                    # end is within lookahead no more peaks can be found
                     break
                 continue
             # else:  # slows shit down this does
@@ -355,22 +353,18 @@ def peakdetect_parabola(y_axis, x_axis, points = 31):
     # get raw peaks
     max_raw, min_raw = peakdetect_zero_crossing(y_axis)
     
-    # define output variable
-    max_peaks = []
-    min_peaks = []
-    
     max_ = _peakdetect_parabola_fitter(max_raw, x_axis, y_axis, points)
     min_ = _peakdetect_parabola_fitter(min_raw, x_axis, y_axis, points)
     
     max_peaks = map(lambda x: [x[0], x[1]], max_)
-    max_fitted = map(lambda x: x[-1], max_)
+    # max_fitted = map(lambda x: x[-1], max_)
     min_peaks = map(lambda x: [x[0], x[1]], min_)
-    min_fitted = map(lambda x: x[-1], min_)
+    # min_fitted = map(lambda x: x[-1], min_)
     
     return [max_peaks, min_peaks]
     
 
-def peakdetect_sine(y_axis, x_axis, points = 31, lock_frequency = False):
+def peakdetect_sine(y_axis, x_axis, points=31, lock_frequency=False):
     """
     Function for detecting local maxima and minima in a signal.
     Discovers peaks by fitting the model function:
@@ -418,10 +412,6 @@ def peakdetect_sine(y_axis, x_axis, points = 31, lock_frequency = False):
     
     # get raw peaks
     max_raw, min_raw = peakdetect_zero_crossing(y_axis)
-    
-    # define output variable
-    max_peaks = []
-    min_peaks = []
     
     # get global offset
     offset = np.mean([np.mean(max_raw, 0)[1], np.mean(min_raw, 0)[1]])
@@ -485,9 +475,9 @@ def peakdetect_sine(y_axis, x_axis, points = 31, lock_frequency = False):
     
     # structure date for output
     max_peaks = map(lambda x: [x[0], x[1]], fitted_peaks[0])
-    max_fitted = map(lambda x: x[-1], fitted_peaks[0])
+    # max_fitted = map(lambda x: x[-1], fitted_peaks[0])
     min_peaks = map(lambda x: [x[0], x[1]], fitted_peaks[1])
-    min_fitted = map(lambda x: x[-1], fitted_peaks[1])
+    # min_fitted = map(lambda x: x[-1], fitted_peaks[1])
 
     return [max_peaks, min_peaks]
 
@@ -594,10 +584,10 @@ def peakdetect_zero_crossing(y_axis, x_axis = None, window = 11):
     zero_indices = zero_crossings(y_axis, window_len = window)
     period_lengths = np.diff(zero_indices)
             
-    bins_y = [y_axis[index:index + diff] for index, diff in 
-        zip(zero_indices, period_lengths)]
-    bins_x = [x_axis[index:index + diff] for index, diff in 
-        zip(zero_indices, period_lengths)]
+    bins_y = [y_axis[index:index + diff] for index, diff in
+              zip(zero_indices, period_lengths)]
+    bins_x = [x_axis[index:index + diff] for index, diff in
+              zip(zero_indices, period_lengths)]
         
     even_bins_y = bins_y[::2]
     odd_bins_y = bins_y[1::2]
@@ -694,8 +684,8 @@ def _smooth(x, window_len=11, window="hanning"):
     return y
     
     
-def zero_crossings(y_axis, window_len = 11, 
-    window_f="hanning", offset_corrected=False):
+def zero_crossings(y_axis, window_len = 11,
+                   window_f="hanning", offset_corrected=False):
     """
     Algorithm to find zero crossings. Smooths the curve and finds the
     zero-crossings by looking for a sign change.
@@ -853,7 +843,7 @@ def zero_crossings_sine_fit(y_axis, x_axis, fit_window=None, smooth_window=11):
         subset_end = min(indice + fit_window + 1, len(x_axis) - 1.0)
         x_subset = np.asarray(x_axis[subset_start:subset_end])
         y_subset = np.asarray(y_axis[subset_start:subset_end])
-        #fit
+        # fit
         popt, pcov = curve_fit(func, x_subset, y_subset, p0)
         
         true_crossings.append(popt[0])
@@ -873,7 +863,7 @@ def _test_graph():
     i = 10000
     x = np.linspace(0,3.7*pi,i)
     y = (0.3*np.sin(x) + np.sin(1.3 * x) + 0.9 * np.sin(4.2 * x) + 0.06 *
-    np.random.randn(i))
+         np.random.randn(i))
     y *= -1
     x = range(i)
     
@@ -883,7 +873,6 @@ def _test_graph():
     xn = [p[0] for p in _min]
     yn = [p[1] for p in _min]
     
-    plot = pylab.plot(x,y)
     pylab.hold(True)
     pylab.plot(xm, ym, "r+")
     pylab.plot(xn, yn, "g+")
@@ -905,36 +894,10 @@ def _test_graph_cross(window = 11):
     np.random.randn(i))
     y *= -1
     pylab.plot(x,y)
-    # pylab.show()
-    
+
     crossings = zero_crossings_sine_fit(y,x, smooth_window = window)
     y_cross = [0] * len(crossings)
     
-    plot = pylab.plot(x,y)
     pylab.hold(True)
     pylab.plot(crossings, y_cross, "b+")
-    pylab.show()
-
-    
-if __name__ == "__main__":
-    from math import pi
-    import pylab
-    
-    i = 10000
-    x = np.linspace(0,3.7*pi,i)
-    y = (0.3*np.sin(x) + np.sin(1.3 * x) + 0.9 * np.sin(4.2 * x) + 0.06 * 
-    np.random.randn(i))
-    y *= -1
-    
-    _max, _min = peakdetect(y, x, 750, 0.30)
-    xm = [p[0] for p in _max]
-    ym = [p[1] for p in _max]
-    xn = [p[0] for p in _min]
-    yn = [p[1] for p in _min]
-    
-    plot = pylab.plot(x, y)
-    pylab.hold(True)
-    pylab.plot(xm, ym, "r+")
-    pylab.plot(xn, yn, "g+")
-
     pylab.show()
