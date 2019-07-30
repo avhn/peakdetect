@@ -2,6 +2,7 @@ Peakdetect
 ==========
 |PyPI|
 |build|
+|python versions|
 
 Read, `Markdown Documentation`_.
 
@@ -10,4 +11,5 @@ Read, `Markdown Documentation`_.
     :target: https://pypi.org/project/peakdetect
 .. |build| image:: https://travis-ci.org/Anaxilaus/peakdetect.svg?branch=master
     :target: https://travis-ci.org/Anaxilaus/peakdetect
+.. |python versions| image:: https://img.shields.io/badge/python-2%20and%203-blue.svg
 .. _`Markdown Documentation`: https://github.com/Anaxilaus/peakdetect/tree/master/README.md
