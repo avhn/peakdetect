@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import numpy as np
 from math import pi, sqrt
+import numpy as np
 
 __all__ = [
         'ACV_A1',

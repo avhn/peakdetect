@@ -14,7 +14,7 @@ with open('requirements.txt') as file:
 setup(
     name='peakdetect',
     version='1.0',
-    description='Analytic peak finder.',
+    description='Analytic peak finder',
     packages=['peakdetect'],
     url='https://github.com/Anaxilaus/peakdetect',
     author='Anaxilaus',
