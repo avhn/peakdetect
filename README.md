@@ -1,17 +1,31 @@
 ## Peakdetect
-
 [![PyPI](https://badge.fury.io/py/peakdetect.svg)](https://pypi.org/project/peakdetect)
 [![Build](https://travis-ci.org/Anaxilaus/peakdetect.svg?branch=master)](https://travis-ci.org/Anaxilaus/peakdetect)
+[![Python Version](https://img.shields.io/badge/python-2%20and%203-blue.svg)](./.travis.yml)
 
-Simple peak detection library for Python based on [Billauer](http://billauer.co.il/peakdet.html)'s work and [this gist](https://gist.github.com/sixtenbe/1178136). If you can improve this project, feel free to contribute.
+Simple peak detection library for Python based on [Billauer's work](http://billauer.co.il/peakdet.html) and [this gist](https://gist.github.com/sixtenbe/1178136). If you can improve this project, feel free to contribute.
 
 
+## Installation
+**Pip:**
+```
+$ pip install peakdetect
+```
+
+**Clone repository:**
+```
+$ git clone https://github.com/Anaxilaus/peakdetect
+$ python peakdetect/setup.py install
+```
+*Requirements:* numpy, scipy and matplotlib. Setup installs requirements itself.
+
+
+## Usage
 **Example usage:**
 ```python
 >>> import peakdetect
 >>> peaks = peakdetect.peakdetect(y_axis, x_axis, lookahead, delta)
 ```
-
 
 **Documentation on peakdetect function, keyword arguments:**
 ```
