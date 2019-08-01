@@ -16,7 +16,7 @@ README = open('README.rst').read()
 setup(
     name='peakdetect',
     version='1.1',
-    description='Analytic peak finder',
+    description='Simple peak detection',
     long_description=README,
     packages=['peakdetect'],
     url='https://github.com/Anaxilaus/peakdetect',
