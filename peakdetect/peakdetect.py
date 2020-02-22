@@ -1,4 +1,3 @@
-#!/usr/env/bin python3
 # -*- coding: utf-8 -*-
 
 from math import pi, log
