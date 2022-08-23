@@ -14,11 +14,11 @@ README = open('README.rst').read()
     
 setup(
     name='peakdetect',
-    version='1.1',
+    version='1.2',
     description='Simple peak detection',
     long_description=README,
     packages=['peakdetect'],
-    url='https://github.com/Anaxilaus/peakdetect',
-    author='Anaxilaus',
+    url='https://github.com/avhn/peakdetect',
+    author='avhn',
     install_requires=reqs
 )

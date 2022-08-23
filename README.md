@@ -14,7 +14,7 @@ $ pip install peakdetect
 
 **Clone repository:**
 ```
-$ git clone https://github.com/Anaxilaus/peakdetect
+$ git clone https://github.com/avhn/peakdetect
 $ python peakdetect/setup.py install
 ```
 *Requirements:* numpy and scipy. Setup installs requirements itself.
